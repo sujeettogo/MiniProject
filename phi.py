@@ -1,6 +1,7 @@
 import cv2
 from mtcnn.mtcnn import MTCNN
 import sys
+import json
 
 def getRatio(h, w):
 	'''return ratios'''
@@ -35,17 +36,17 @@ detector = MTCNN()
 image = cv2.imread(pic_name)
 
 result = detector.detect_faces(image)
-print(result)
+#print(result)
 
 x,y,w,h = result[0]['box']
 keypoints = result[0]['keypoints']
 
 #cv2.rectangle(image, (x, y), (x+w, y+h), (0,0,0), 2)
-cv2.circle(image,(keypoints['left_eye']), 2, (0,0,255), 2)
-cv2.circle(image,(keypoints['right_eye']), 2, (0,0,255), 2)
-cv2.circle(image,(keypoints['nose']), 2, (0,0,255), 2)
-cv2.circle(image,(keypoints['mouth_left']), 2, (0,0,255), 2)
-cv2.circle(image,(keypoints['mouth_right']), 2, (0,0,255), 2)
+#cv2.circle(image,(keypoints['left_eye']), 2, (0,0,255), 2)
+#cv2.circle(image,(keypoints['right_eye']), 2, (0,0,255), 2)
+#cv2.circle(image,(keypoints['nose']), 2, (0,0,255), 2)
+#cv2.circle(image,(keypoints['mouth_left']), 2, (0,0,255), 2)
+#cv2.circle(image,(keypoints['mouth_right']), 2, (0,0,255), 2)
 
 ratio1 = getRatio(h, w)
 
@@ -62,18 +63,27 @@ h2, h3 = getHorizontalPts(keypoints)
 ratio4 = getRatio(h3-h1, h3-h2)
 ratio5 = getRatio(h4-h1, h3-h1)
 
-print(f"R1 : {ratio1}")
+#print(f"R1 : {ratio1}")
 #cv2.rectangle(image, (h1, v1), (h4, v3), (0,0,0), 2)
 #cv2.rectangle(image, (h1, v3), (h4, v4), (0,0,0), 2)
 #cv2.rectangle(image, (h1, v1), (h4, v3), (0,0,0), 2)
 #cv2.rectangle(image, (h1, v1), (h4, v2), (0,0,0), 2)
-print(f"R2 : {ratio2}")
-print(f"R3 : {ratio3}")
+#print(f"R2 : {ratio2}")
+#print(f"R3 : {ratio3}")
 #cv2.rectangle(image, (h1, y), (h3, v4), (0,0,0), 2)
 #cv2.rectangle(image, (h2, y), (h3, v4), (0,0,0), 2)
 #cv2.rectangle(image, (h1, y), (h4, v4), (0,0,0), 2)
 #cv2.rectangle(image, (h1, y), (h3, v4), (0,0,0), 2)
-print(f"R4 : {ratio4}")
-print(f"R5 : {ratio5}")
+#print(f"R4 : {ratio4}")
+#print(f"R5 : {ratio5}")
+scores = {
+	'score1':ratio1,
+	'score2':ratio2,
+	'score3':ratio3,
+	'score4':ratio4,
+	'score5':ratio5
+}
 
-cv2.imwrite("output.png",image)
+with open('scores.txt','w') as out:
+	json.dump(scores, out)
+#cv2.imwrite("output.png",image)
